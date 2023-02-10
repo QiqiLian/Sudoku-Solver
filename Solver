@@ -1,0 +1,56 @@
+def solve(grid):
+    # Find the next empty cell
+    for row in range(9):
+        for col in range(9):
+            if grid[row][col] == 0:
+                # Try numbers 1 to 9 in the empty cell
+                for num in range(1,10):
+                    if is_valid(grid, row, col, num):
+                        # If the number is valid, fill it in the cell
+                        grid[row][col] = num
+                        # Recursively try to solve the rest of the puzzle
+                        if solve(grid):
+                            return True
+                        # If the solution doesn't work, backtrack by clearing the cell
+                        grid[row][col] = 0
+                # If no number works in the cell, return False to trigger backtracking
+                return False
+    # If all cells have been filled, the puzzle is solved
+    return True
+
+def is_valid(grid, row, col, num):
+    # Check if 'num' is not already in the same row
+    for i in range(9):
+        if grid[row][i] == num:
+            return False
+
+    # Check if 'num' is not already in the same column
+    for i in range(9):
+        if grid[i][col] == num:
+            return False
+
+    # Check if 'num' is not already in the same 3x3 box
+    box_x = (col//3)*3
+    box_y = (row//3)*3
+    for i in range(3):
+        for j in range(3):
+            if grid[box_y+i][box_x+j] == num:
+                return False
+
+    # If all checks pass, 'num' is a valid choice
+    return True
+
+if __name__ == "__main__":
+    # Read the grid from the user
+    grid = []
+    for i in range(9):
+        grid.append([int(x) for x in input().strip().split()])
+
+    # Solve the puzzle
+    if solve(grid):
+        # Print the solution
+        for row in grid:
+            print(row)
+    else:
+        # If no solution is found
+        print("No solution exists")
